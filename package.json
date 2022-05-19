@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "form-data": "^4.0.0",
+    "node": "^17.7.2"
+  }
+}
