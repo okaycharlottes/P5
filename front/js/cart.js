@@ -162,3 +162,146 @@ function totalProduit() {
     document.getElementById("totalQuantity").textContent = totalArticle;
     document.getElementById("totalPrice").textContent = totalPrix;
   }
+
+  
+//  formulaire
+
+// les données du client seront stockées dans ce tableau pour la commande sur page panier
+if (page.match("cart")) {
+  var contactClient = {};
+  localStorage.contactClient = JSON.stringify(contactClient);
+  
+  var prenom = document.querySelector("#firstName");
+  prenom.classList.add("regex_texte");
+  var nom = document.querySelector("#lastName");
+  nom.classList.add("regex_texte");
+  var ville = document.querySelector("#city");
+  ville.classList.add("regex_texte");
+  
+  var adresse = document.querySelector("#address");
+  adresse.classList.add("regex_adresse");
+  
+  var email = document.querySelector("#email");
+  email.classList.add("regex_email");
+  // on pointe les élément qui ont la classe .regex_texte
+  var regexTexte = document.querySelectorAll(".regex_texte");
+  // modification du type de l'input type email à text à cause d'un comportement de l'espace blanc non voulu vis à vis de la regex 
+  document.querySelector("#email").setAttribute("type", "text");
+}
+
+let regexLettre = /^[a-záàâäãåçéèêëíìîïñóòôöõúùûüýÿæœ\s-]{1,31}$/i;
+// /^ début regex qui valide les caratères chiffre lettre et caratères spéciaux a-z0-9áàâäãåçéèêëíìîïñóòôöõúùûüýÿæœ aussi les espaces blancs et tiret \s- comprit entre 1 et 60 caratères (nombre de caractère maximum sur carte identité) {1,60} et on termine la regex $/i en indiquant que les éléments selectionnés ne sont pas sensible à la casse
+let regexChiffreLettre = /^[a-z0-9áàâäãåçéèêëíìîïñóòôöõúùûüýÿæœ\s-]{1,60}$/i;
+let regValideEmail = /^[a-z0-9æœ.!#$%&’*+/=?^_`{|}~"(),:;<>@[\]-]{1,60}$/i;
+let regMatchEmail = /^[a-zA-Z0-9æœ.!#$%&’*+/=?^_`{|}~"(),:;<>@[\]-]+@([\w-]+\.)+[\w-]{2,4}$/i;
+
+// Ecoute et attribution de point(pour sécurité du clic) si ces champs sont ok d'après la regex
+
+if (page.match("cart")) {
+  regexTexte.forEach((regexTexte) =>
+    regexTexte.addEventListener("input", (e) => {
+      // valeur sera la valeur de l'input en dynamique
+      valeur = e.target.value;
+      // regNormal sera la valeur de la réponse regex, 0 ou -1
+      let regNormal = valeur.search(regexLettre);
+      if (regNormal === 0) {
+        contactClient.firstName = prenom.value;
+        contactClient.lastName = nom.value;
+        contactClient.city = ville.value;
+      }
+      if (
+        contactClient.city !== "" &&
+        contactClient.lastName !== "" &&
+        contactClient.firstName !== "" &&
+        regNormal === 0
+      ) {
+        contactClient.regexNormal = 3;
+      } else {
+        contactClient.regexNormal = 0;
+      }
+      localStorage.contactClient = JSON.stringify(contactClient);
+      couleurRegex(regNormal, valeur, regexTexte);
+      valideClic();
+    })
+  );
+}
+
+// le champ écouté via la regex regexLettre fera réagir, grâce à texteInfo, la zone concernée
+
+texteInfo(regexLettre, "#firstNameErrorMsg", prenom);
+texteInfo(regexLettre, "#lastNameErrorMsg", nom);
+texteInfo(regexLettre, "#cityErrorMsg", ville);
+
+// Ecoute et attribution de point(pour sécurité du clic) si ces champs sont ok d'après la regex
+
+if (page.match("cart")) {
+  let regexAdresse = document.querySelector(".regex_adresse");
+  regexAdresse.addEventListener("input", (e) => {
+    // valeur sera la valeur de l'input en dynamique
+    valeur = e.target.value;
+    // regNormal sera la valeur de la réponse regex, 0 ou -1
+    let regAdresse = valeur.search(regexChiffreLettre);
+    if (regAdresse == 0) {
+      contactClient.address = adresse.value;
+    }
+    if (contactClient.address !== "" && regAdresse === 0) {
+      contactClient.regexAdresse = 1;
+    } else {
+      contactClient.regexAdresse = 0;
+    }
+    localStorage.contactClient = JSON.stringify(contactClient);
+    couleurRegex(regAdresse, valeur, regexAdresse);
+    valideClic();
+  });
+}
+
+// le champ écouté via la regex regexChiffreLettre fera réagir, grâce à texteInfo, la zone concernée
+
+texteInfo(regexChiffreLettre, "#addressErrorMsg", adresse);
+
+// Ecoute et attribution de point(pour sécurité du clic) si ce champ est ok d'après les regex
+
+if (page.match("cart")) {
+  let regexEmail = document.querySelector(".regex_email");
+  regexEmail.addEventListener("input", (e) => {
+    // valeur sera la valeur de l'input en dynamique
+    valeur = e.target.value;
+    
+    let regMatch = valeur.match(regMatchEmail);
+    // quand le resultat sera correct, le console log affichera une autre réponse que null; regValide sera la valeur de la réponse regex, 0 ou -1
+    let regValide = valeur.search(regValideEmail);
+    if (regValide === 0 && regMatch !== null) {
+      contactClient.email = email.value;
+      contactClient.regexEmail = 1;
+    } else {
+      contactClient.regexEmail = 0;
+    }
+    localStorage.contactClient = JSON.stringify(contactClient);
+    couleurRegex(regValide, valeur, regexEmail);
+    valideClic();
+  });
+}
+
+// fonction d'affichage individuel des paragraphes sous input sauf pour l'input email
+
+function texteInfo(regex, pointage, zoneEcoute) {
+      if (page.match("cart")) {
+      zoneEcoute.addEventListener("input", (e) => {
+      // valeur sera la valeur de l'input en dynamique
+      valeur = e.target.value;
+      index = valeur.search(regex);
+    // si valeur est toujours un string vide et la regex différante de 0 (regex à -1 et le champ est vide mais pas d'erreur)
+      if (valeur === "" && index != 0) {
+        document.querySelector(pointage).textContent = "Veuillez renseigner ce champ.";
+        document.querySelector(pointage).style.color = "white";
+        // si valeur n'est plus un string vide et la regex différante de 0 (regex à -1 et le champ n'est pas vide donc il y a une erreur)
+      } else if (valeur !== "" && index != 0) {
+        document.querySelector(pointage).innerHTML = "Reformulez cette donnée";
+        document.querySelector(pointage).style.color = "white";
+        // pour le reste des cas (quand la regex ne décèle aucune erreur et est à 0 peu importe le champ vu qu'il est validé par la regex)
+      } else {
+      
+      }
+    });
+  }
+}

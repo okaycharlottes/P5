@@ -7,11 +7,11 @@ console.log(id);
 
 // Récupération des produits de l'api et traitement des données (voir script.js)
 
-fetch("http://localhost:3000/api/products")
+fetch("http://localhost:3000/api/products/" + id)
   .then((res) => res.json())
-  .then((objetProduits) => {
+  .then((objetProduit) => {
 
-    lesProduits(objetProduits);
+    affichageProduit(objetProduit);
   })
   .catch((err) => {
     document.querySelector(".item").innerHTML = "<h1>erreur 404</h1>";
@@ -25,32 +25,34 @@ panierClient._id = id;
 
 // fonction d'affichage du produit de l'api
 
-function lesProduits(produit) {
+function affichageProduit(produit) {
+  //console.log(produit);
   // déclaration des variables selector
   let imageAlt = document.querySelector("article div.item__img");
   let titre = document.querySelector("#title");
   let prix = document.querySelector("#price");
   let description = document.querySelector("#description");
   let couleurOption = document.querySelector("#colors");
-  
-  for (let produits of produit) {
-    
-    if (id === produits._id) {
-      //ajout innerHTML
-      imageAlt.innerHTML = `<img src="${produits.imageUrl}" alt="${produits.altTxt}">`;
-      titre.textContent = `${produits.name}`;
-      prix.textContent = `${produits.price}`;
-      description.textContent = `${produits.description}`;
-      // on ajoute le prix dans le panier 
-      panierClient.prix = `${produits.price}`;
-      // boucle pour chercher les couleurs pour chaque produit 
-      for (let couleur of produits.colors) {
-        couleurOption.innerHTML += `<option value="${couleur}">${couleur}</option>`;
-      }
-    }
+
+  //for (let produits of produit) {
+
+  //if (id === produit._id) {
+  //ajout innerHTML
+  imageAlt.innerHTML = `<img src="${produit.imageUrl}" alt="${produit.altTxt}">`;
+  titre.textContent = produit.name;
+  prix.textContent = produit.price;
+  description.textContent = produit.description;
+  // on ajoute le prix dans le panier 
+  panierClient.prix = produit.price;
+  // boucle pour chercher les couleurs pour chaque produit 
+  for (let couleur of produit.colors) {
+    couleurOption.innerHTML += `<option value="${couleur}">${couleur}</option>`;
   }
-  
+  // }
+  // }
+
 }
+
 
 let choixCouleur = document.querySelector("#colors");
 // On écoute ce qu'il se passe dans #colors
@@ -99,8 +101,10 @@ choixProduit.addEventListener("click", () => {
     
   } else {
     
-    Panier();
-    console.log("clic effectué");
+    ajoutPanier();
+    //redirection vers la page panier
+    window.location.assign("cart.html")
+    //console.log("clic effectué");
     
   }
 });
@@ -108,18 +112,18 @@ choixProduit.addEventListener("click", () => {
 // initialiser le panier
 let choixProduitClient = [];
 // ce qu'on récupère du local storage appelé panierStocké
-let produitsEnregistrés = [];
+let produitsEnregistres = [];
 // déclaration tableau qui sera un choix d'article/couleur non effectué donc non présent dans le panierStocké
 let produitsTemporaires = [];
-// déclaration tableau qui sera la concaténation des produitsEnregistrés et de produitsTemporaires
+// déclaration tableau qui sera la concaténation des produitsEnregistres et de produitsTemporaires
 let produitsAPousser = [];
 
 // fonction ajoutPremierProduit qui ajoute l'article choisi dans le tableau vierge
 //-------------------------------------------------------------------------
 function ajoutPremierProduit() {
-  console.log(produitsEnregistrés);
-  //si produitsEnregistrés est null c'est qu'il n'a pas été créé
-  if (produitsEnregistrés === null) {
+  console.log(produitsEnregistres);
+  //si produitsEnregistres est null c'est qu'il n'a pas été créé
+  if (produitsEnregistres === null) {
     // pousse le produit choisit dans choixProduitClient
     choixProduitClient.push(panierClient);
     console.log(panierClient);
@@ -134,9 +138,9 @@ function ajoutAutreProduit() {
   produitsAdd = [];
   // pousse le produit choisit dans produitsTemporaires
   produitsTemporaires.push(panierClient);
-  // combine produitsTemporaires et/dans produitsEnregistrés, ça s'appele produitsAPousser
-  // autre manière de faire: produitsAPousser = produitsEnregistrés.concat(produitsTemporaires);
-  produitsAdd = [...produitsEnregistrés, ...produitsTemporaires];
+  // combine produitsTemporaires et/dans produitsEnregistres, ça s'appele produitsAPousser
+  // autre manière de faire: produitsAPousser = produitsEnregistres.concat(produitsTemporaires);
+  produitsAdd = [...produitsEnregistres, ...produitsTemporaires];
   //fonction pour trier et classer les id et couleurs
   produitsAdd.sort(function triage(a, b) {
     if (a._id < b._id) return -1;
@@ -153,12 +157,12 @@ function ajoutAutreProduit() {
   return (localStorage.panierStocké = JSON.stringify(produitsAdd));
 } 
 
-function Panier() {
+function ajoutPanier() {
   
-  produitsEnregistrés = JSON.parse(localStorage.getItem("panierStocké"));
+  produitsEnregistres = JSON.parse(localStorage.getItem("panierStocké"));
   // si produitEnregistrés existe (si des articles ont déja été choisis et enregistrés par le client)
-  if (produitsEnregistrés) {
-    for (let choix of produitsEnregistrés) {
+  if (produitsEnregistres) {
+    for (let choix of produitsEnregistres) {
       //comparateur d'égalité des articles actuellement choisis et ceux déja choisis
       if (choix._id === id && choix.couleur === panierClient.couleur) {
         //information client
@@ -169,14 +173,12 @@ function Panier() {
         // on convertit en JSON le résultat précédent dans la zone voulue
         choix.quantité = JSON.stringify(additionQuantité);
         // dernière commande, on renvoit un nouveau panierStocké dans le localStorage
-        return (localStorage.panierStocké = JSON.stringify(produitsEnregistrés));
+        return (localStorage.panierStocké = JSON.stringify(produitsEnregistres));
       }
     }
     // appel fonction 
     return ajoutAutreProduit();
   }
-  // appel fonction ajoutPremierProduit si produitsEnregistrés n'existe pas
+  // appel fonction ajoutPremierProduit si produitsEnregistres n'existe pas
   return ajoutPremierProduit();
 }
-
-
