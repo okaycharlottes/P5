@@ -247,8 +247,6 @@ form.addEventListener("submit", function (e) {
     const email = document.getElementById('email').value
 
 
-
-
     if (validNameCity(form.firstName) == false) {
         alert("merci de renseigner votre Prénom")
 
@@ -261,13 +259,11 @@ form.addEventListener("submit", function (e) {
     } else if (validMail(form.email) == false) {
         alert("merci de renseigner votre Email")
 
-    } else if (panierStocke.length == 0) {
+    } else if (totalProduit.length == 0) {
         alert("votre panier est vide")
 
     } else {
-        //saveContact(contact)
 
-        //let contact = getContact()
 
         contact = {
             firstName: firstName,
@@ -277,18 +273,18 @@ form.addEventListener("submit", function (e) {
             email: email
         }
 
-        function getBasket() {
-          let basket = localStorage.getItem("basket")
-          if (basket == null) {
+        function getPanier() {
+          let panier = localStorage.getItem("panier")
+          if (panier == null) {
               return []
           } else {
-              return JSON.parse(basket)
+              return JSON.parse(panier)
           }
         }
 
-        let basket = getBasket()
+        let panier = getPanier()
 
-        let products = basket.map(i => i.trueId)
+        let products = panier.map(i => i.trueId)
 
         let post = {
             contact: contact,
