@@ -3,17 +3,17 @@
 const page = document.location.href;
 
 //if (page.match("cart")) {
-  fetch("http://localhost:3000/api/products")
-    .then((res) => res.json())
-    .then((objetProduits) => {
-      console.log(objetProduits);
-      // appel de la fonction affichagePanier
-      affichagePanier(objetProduits);
-    })
-    .catch((err) => {
-      document.querySelector("#cartAndFormContainer").innerHTML = "<h1>erreur 404</h1>";
-      console.log("erreur 404, sur ressource api: " + err);
-    });
+fetch("http://localhost:3000/api/products")
+  .then((res) => res.json())
+  .then((objetProduits) => {
+    console.log(objetProduits);
+    // appel de la fonction affichagePanier
+    affichagePanier(objetProduits);
+  })
+  .catch((err) => {
+    document.querySelector("#cartAndFormContainer").innerHTML = "<h1>erreur 404</h1>";
+    console.log("erreur 404, sur ressource api: " + err);
+  });
 /*} else {
   console.log("sur page confirmation");
 }*/
@@ -169,50 +169,50 @@ function totalProduit() {
 
 // regex nom, prénom et ville
 
-function validNameCity (inputName){
-    let nameRegexp = new RegExp (/^[a-z ,.'-]+$/i)
+function validNameCity(inputName) {
+  let nameRegexp = new RegExp(/^[a-z ,.'-]+$/i)
 
-    let testName = nameRegexp.test(inputName.value)
-    let messageName = inputName.nextElementSibling
-    if(testName){
-        messageName.innerHTML = ""
-        return true
-    }else{
-        messageName.innerHTML = "Invalide"
-        return false
-    }
+  let testName = nameRegexp.test(inputName.value)
+  let messageName = inputName.nextElementSibling
+  if (testName) {
+    messageName.innerHTML = ""
+    return true
+  } else {
+    messageName.innerHTML = "Invalide"
+    return false
+  }
 }
 
 // regex mail 
 
-  function validMail (inputMail){
-    let mailRegexp = new RegExp (/^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i)
-    let testMail = mailRegexp.test(inputMail.value)
-    let messageMail = inputMail.nextElementSibling
-    if(testMail){
-        messageMail.innerHTML = ""
-        return true
-    }else{
-        messageMail.innerHTML = "Invalide"
-        return false
-    }
+function validMail(inputMail) {
+  let mailRegexp = new RegExp(/^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i)
+  let testMail = mailRegexp.test(inputMail.value)
+  let messageMail = inputMail.nextElementSibling
+  if (testMail) {
+    messageMail.innerHTML = ""
+    return true
+  } else {
+    messageMail.innerHTML = "Invalide"
+    return false
+  }
 }
 
 // envoi de l'objet contact dans le localStorage 
 
-function saveContact(contact){
-    localStorage.setItem("contact", JSON.stringify(contact))
+function saveContact(contact) {
+  localStorage.setItem("contact", JSON.stringify(contact))
 }
 
 // recupération de l'objet contact du localStorage 
 
 function getContact() {
-    let contact = localStorage.getItem("contact")
-    if (contact == null) {
-        return []
-    } else {
-        return JSON.parse(contact)
-    }
+  let contact = localStorage.getItem("contact")
+  if (contact == null) {
+    return []
+  } else {
+    return JSON.parse(contact)
+  }
 }
 
 // verification du formulaire 
@@ -220,112 +220,112 @@ function getContact() {
 let form = document.querySelector('.cart__order__form')
 
 form.firstName.addEventListener('change', function () {
-    validNameCity(this)
+  validNameCity(this)
 })
 
 form.lastName.addEventListener('change', function () {
-    validNameCity(this)
+  validNameCity(this)
 })
 
 form.city.addEventListener('change', function () {
-    validNameCity(this)
+  validNameCity(this)
 })
 
 form.email.addEventListener('change', function () {
-    //alert("dfdsfsdfds");
-    validMail(this)
+  //alert("dfdsfsdfds");
+  validMail(this)
 })
 
 // création de l'objet contact au submit si formulaire valide et redirection vers la page de confirmation
 
 form.addEventListener("submit", function (e) {
-    e.preventDefault()
-    const firstName = document.getElementById('firstName').value
-    const lastName = document.getElementById('lastName').value
-    const address = document.getElementById('address').value
-    const city = document.getElementById('city').value
-    const email = document.getElementById('email').value
+  e.preventDefault()
+  const firstName = document.getElementById('firstName').value
+  const lastName = document.getElementById('lastName').value
+  const address = document.getElementById('address').value
+  const city = document.getElementById('city').value
+  const email = document.getElementById('email').value
 
 
-    if (validNameCity(form.firstName) == false) {
-        alert("merci de renseigner votre Prénom")
+  if (validNameCity(form.firstName) == false) {
+    alert("merci de renseigner votre Prénom")
 
-    } else if (validNameCity(form.lastName) == false) {
-        alert("merci de renseigner votre Nom")
+  } else if (validNameCity(form.lastName) == false) {
+    alert("merci de renseigner votre Nom")
 
-    } else if (validNameCity(form.city) == false) {
-        alert("merci de renseigner votre Ville")
+  } else if (validNameCity(form.city) == false) {
+    alert("merci de renseigner votre Ville")
 
-    } else if (validMail(form.email) == false) {
-        alert("merci de renseigner votre Email")
+  } else if (validMail(form.email) == false) {
+    alert("merci de renseigner votre Email")
 
-    } else if (totalProduit.length == 0) {
-        alert("votre panier est vide")
+  } else if (totalProduit.length == 0) {
+    alert("votre panier est vide")
 
-    } else {
-
-
-        contact = {
-            firstName: firstName,
-            lastName: lastName,
-            address: address,
-            city: city,
-            email: email
-        }
-
-        function getPanier() {
-          let panier = localStorage.getItem("panier")
-          if (panier == null) {
-              return []
-          } else {
-              return JSON.parse(panier)
-          }
-        }
-
-        let panier = getPanier()
-
-        let products = panier.map(i => i.trueId)
-
-        let post = {
-            contact: contact,
-            products: products,
-        }
-
-        // option necessaire à l'api pour utiliser POST
-
-        const apiParam = {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(post)
-        }
-
-        // envoi des données au serveur
-
-        fetch("http://localhost:3001/api/products/order", apiParam)
-            .then(data => data.json())
-
-            // affichage du numéro de commande
-
-            .then(order => {
-                //let htmlOrderId = document.getElementById('orderId')
-                let newOrderId = order.orderId;
-
-                //redirection vers la page confirmation
-                window.location.assign(`confirmation.html?id=${newOrderId}`)
+  } else {
 
 
-
-            })
-
-        // suppression du localStorage pour éviter les erreurs une fois la commande passé
-
-        localStorage.clear()
-
-
-
-        
+    contact = {
+      firstName: firstName,
+      lastName: lastName,
+      address: address,
+      city: city,
+      email: email
     }
+
+    function getPanier() {
+      let panier = localStorage.getItem("panier")
+      if (panier == null) {
+        return []
+      } else {
+        return JSON.parse(panier)
+      }
+    }
+
+    let panier = getPanier()
+
+    let products = panier.map(i => i.trueId)
+
+    let post = {
+      contact: contact,
+      products: products,
+    }
+
+    // option necessaire à l'api pour utiliser POST
+
+    const apiParam = {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(post)
+    }
+
+    // envoi des données au serveur
+
+    fetch("http://localhost:3001/api/products/order", apiParam)
+      .then(data => data.json())
+
+      // affichage du numéro de commande
+
+      .then(order => {
+        //let htmlOrderId = document.getElementById('orderId')
+        let newOrderId = order.orderId;
+
+        //redirection vers la page confirmation
+        window.location.assign(`confirmation.html?id=${newOrderId}`)
+
+
+
+      })
+
+    // suppression du localStorage pour éviter les erreurs une fois la commande passé
+
+    localStorage.clear()
+
+
+
+
+  }
 })
