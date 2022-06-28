@@ -81,7 +81,7 @@ function affiche(indexe) {
   </article>`
   ).join(""); //on remplace les virgules de jonctions des objets du tableau par un vide
   // reste à l'écoute des modifications de quantité pour l'affichage et actualiser les données
-  totalProduit();
+  AffichagetotalProduit();
 }
 
 // fonction modifQuantite on modifie dynamiquement les quantités du panier
@@ -101,7 +101,7 @@ function modifQuantite() {
           article.quantite = eq.target.value;
           localStorage.panierStocke = JSON.stringify(panier);
           // actualiser les données
-          totalProduit();
+          AffichagetotalProduit();
         }
     });
   });
@@ -112,7 +112,7 @@ function suppression() {
   const cartdelete = document.querySelectorAll(".cart__item .deleteItem");
   // pour chaque élément cartdelete
   cartdelete.forEach((cartdelete) => {
-    cartdelete.addEventListener("click", () => {
+    cartdelete.addEventListener("submit", () => {
       // appel de la ressource du local storage
       let panier = JSON.parse(localStorage.getItem("panierStocke"));
       for (let d = 0, c = panier.length; d < c; d++)
@@ -136,7 +136,7 @@ function suppression() {
           }
           // on renvoit le nouveau panier converti dans le local storage et on joue la fonction
           localStorage.panierStocke = JSON.stringify(nouveauPanier);
-          totalProduit(); // logique mais pas obligatoire à cause du reload plus bas qui raffraichit l'affichage; serait necessaire avec suppression sans reload
+          AffichagetotalProduit(); // logique mais pas obligatoire à cause du reload plus bas qui raffraichit l'affichage; serait necessaire avec suppression sans reload
           // on recharge la page qui s'affiche sans le produit grace au nouveau panier
           return location.reload();
         }
@@ -145,7 +145,7 @@ function suppression() {
 }
 
 // fonction ajout nombre total produit et coût total
-function totalProduit() {
+function AffichagetotalProduit() {
   let panier = JSON.parse(localStorage.getItem("panierStocke"));
   // déclaration variable en tant que nombre
   let totalArticle = 0;
@@ -259,7 +259,7 @@ form.addEventListener("submit", function (e) {
   } else if (validMail(form.email) == false) {
     alert("merci de renseigner votre Email")
 
-  } else if (totalProduit.length == 0) {
+  } else if (AffichagetotalProduit.length == 0) {
     alert("votre panier est vide")
 
   } else {
