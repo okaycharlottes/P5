@@ -96,13 +96,16 @@ function modifQuantite() {
       for (article of panier)
         if (
           article._id === cart.dataset.id &&
-          cart.dataset.couleur === article.couleur
-        ) {
+          cart.dataset.couleur === article.couleur &&
+          article.quantite <= 1 
+       
+        ){ 
           article.quantite = eq.target.value;
           localStorage.panierStocke = JSON.stringify(panier);
           // actualiser les données
           AffichagetotalProduit();
         }
+        
     });
   });
 }
@@ -112,7 +115,7 @@ function suppression() {
   const cartdelete = document.querySelectorAll(".cart__item .deleteItem");
   // pour chaque élément cartdelete
   cartdelete.forEach((cartdelete) => {
-    cartdelete.addEventListener("submit", () => {
+    cartdelete.addEventListener("click", () => {
       // appel de la ressource du local storage
       let panier = JSON.parse(localStorage.getItem("panierStocke"));
       for (let d = 0, c = panier.length; d < c; d++)
@@ -245,7 +248,8 @@ form.addEventListener("submit", function (e) {
   const address = document.getElementById('address').value
   const city = document.getElementById('city').value
   const email = document.getElementById('email').value
-
+  
+  let basket = AffichagetotalProduit();
 
   if (validNameCity(form.firstName) == false) {
     alert("merci de renseigner votre Prénom")
@@ -259,7 +263,7 @@ form.addEventListener("submit", function (e) {
   } else if (validMail(form.email) == false) {
     alert("merci de renseigner votre Email")
 
-  } else if (AffichagetotalProduit.length == 0) {
+  } else if (basket.length == 0) {
     alert("votre panier est vide")
 
   } else {
@@ -272,6 +276,8 @@ form.addEventListener("submit", function (e) {
       city: city,
       email: email
     }
+
+    
 
     function getPanier() {
       let panier = localStorage.getItem("panier")
