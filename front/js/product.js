@@ -1,8 +1,8 @@
+
 // Récupération de l'id du produit via l' URL
 const params = new URLSearchParams(document.location.search);
 // la variable id va récupérer la valeur du paramètre _id
 const id = params.get("_id");
-console.log(id);
 
 // Récupération des produits de l'api et traitement des données (voir script.js)
 
@@ -25,7 +25,7 @@ panierClient._id = id;
 // fonction d'affichage du produit de l'api
 
 function affichageProduit(produit) {
-  //console.log(produit);
+  
   // déclaration des variables selector
   let imageAlt = document.querySelector("article div.item__img");
   let titre = document.querySelector("#title");
@@ -33,22 +33,20 @@ function affichageProduit(produit) {
   let description = document.querySelector("#description");
   let couleurOption = document.querySelector("#colors");
 
-  //for (let produits of produit) {
 
-  //if (id === produit._id) {
   //ajout innerHTML
   imageAlt.innerHTML = `<img src="${produit.imageUrl}" alt="${produit.altTxt}">`;
   titre.textContent = produit.name;
   prix.textContent = produit.price;
   description.textContent = produit.description;
+
   // on ajoute le prix dans le panier 
   panierClient.prix = produit.price;
   // boucle pour chercher les couleurs pour chaque produit 
   for (let couleur of produit.colors) {
     couleurOption.innerHTML += `<option value="${couleur}">${couleur}</option>`;
   }
-  // }
-  // }
+  
 
 }
 
@@ -61,25 +59,19 @@ choixCouleur.addEventListener("input", (ec) => {
   couleurProduit = ec.target.value;
   // on ajoute la couleur à l'objet panierClient
   panierClient.couleur = couleurProduit;
-  //ça reset la couleur et le texte du bouton si il y a une action sur les inputs dans le cas d'une autre commande du même produit
-  document.querySelector("#addToCart").style.color = "white";
-  document.querySelector("#addToCart").textContent = "Ajouter au panier";
 
 });
 
 // choix quantité dynamique
-
 let choixQuantite = document.querySelector('input[id="quantity"]');
 let quantiteProduit;
+
 // On écoute ce qu'il se passe dans input[name="itemQuantity"]
 choixQuantite.addEventListener("input", (eq) => {
   // on récupère la valeur de la cible de l'évenement dans couleur
   quantiteProduit = eq.target.value;
   // on ajoute la quantité à l'objet panierClient
   panierClient.quantite = quantiteProduit;
-  //ça reset la couleur et le texte du bouton si il y a une action sur les inputs dans le cas d'une autre commande du même produit
-  document.querySelector("#addToCart").style.color = "white";
-  document.querySelector("#addToCart").textContent = "Ajouter au panier";
 
 });
 
@@ -103,8 +95,7 @@ choixProduit.addEventListener("click", () => {
     ajoutPanier();
     //redirection vers la page panier
     window.location.assign("cart.html")
-    //console.log("clic effectué");
-
+    
   }
 });
 
@@ -119,6 +110,7 @@ let produitsAPousser = [];
 
 // fonction ajoutPremierProduit qui ajoute l'article choisi dans le tableau vierge
 //-------------------------------------------------------------------------
+
 function ajoutPremierProduit() {
   console.log(produitsEnregistres);
   //si produitsEnregistres est null c'est qu'il n'a pas été créé
@@ -130,8 +122,10 @@ function ajoutPremierProduit() {
     return (localStorage.panierStocke = JSON.stringify(choixProduitClient));
   }
 }
+
 // fonction ajoutAutreProduit qui ajoute l'article dans le tableau non vierge et fait un tri
 //------------------------------------------------------------------------- 
+
 function ajoutAutreProduit() {
   // vide/initialise produitsAPousser pour recevoir les nouvelles données
   produitsAdd = [];

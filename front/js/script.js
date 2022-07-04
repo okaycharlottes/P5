@@ -1,6 +1,5 @@
 
 // Récupération des produits dans l'api
-
 fetch("http://localhost:3000/api/products")
   // quand tu as la réponse donne le résultat en json.
   .then((res) => res.json())
