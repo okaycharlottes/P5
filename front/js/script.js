@@ -18,9 +18,10 @@ fetch("http://localhost:3000/api/products")
 
   function lesKanaps(produits) {
     let zoneArticle = document.querySelector("#items");
+    let produitAInsererDansDom = "";
     // boucle 
     for (let produit of produits) {
-      zoneArticle.innerHTML += `<a href="./product.html?_id=${produit._id}">
+      produitAInsererDansDom += `<a href="./product.html?_id=${produit._id}">
       <article>
         <img src="${produit.imageUrl}" alt="${produit.altTxt}">
         <h3 class="productName">${produit.name}</h3>
@@ -28,4 +29,5 @@ fetch("http://localhost:3000/api/products")
       </article>
     </a>`;
     }
+    zoneArticle.innerHTML = produitAInsererDansDom;
   }
