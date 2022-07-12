@@ -203,11 +203,12 @@ function modifQuantite() {
       let product = cardItem.dataset
 
       if (quantite <= 0) {
-        //removeFromBasket(productID)
+        
         alert("La quantité ne doit pas être <=0");
         window.location.assign("cart.html");
       } else if (quantite > 100) {
-        //removeFromBasket(productID)
+        
+        alert("La quantité ne doit pas être <=0");
         window.location.assign("cart.html")
       } else {
 
@@ -216,8 +217,7 @@ function modifQuantite() {
         let panier = getPanier();
         // boucle pour modifier la quantité du produit du panier grace à la nouvelle valeur
         for (article of panier)
-          //alert(product.id+"////"+article._id);
-          //alert(product.id+"////"+article._id);
+          
           if (
             article._id === product.id &&
             product.couleur === article.couleur
