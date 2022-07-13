@@ -128,6 +128,10 @@ form.addEventListener("submit", function (e) {
 function affichagePanier(index) {
   // on récupère le panier converti
   let panier = getPanier();
+  // on déclare et on pointe la zone d'affichage
+  let zonePanier = document.querySelector("#cart__items");
+
+  let recapPanierDom = "";
   // si il y a un panier avec une taille differente de 0 (donc supérieure à 0)
   if (panier && panier.length != 0) {
     // zone de correspondance clef/valeur de l'api et du panier
@@ -140,12 +144,37 @@ function affichagePanier(index) {
           choix.image = index[i].imageUrl;
           choix.description = index[i].description;
           choix.alt = index[i].altTxt;
+
+          recapPanierDom += `<article class="cart__item" data-id="${choix._id}" data-couleur="${choix.couleur}" data-quantite="${choix.quantite}"> 
+          <div class="cart__item__img">
+            <img src="${choix.image}" alt="${choix.alt}">
+          </div>
+          <div class="cart__item__content">
+            <div class="cart__item__content__titlePrice">
+              <h2>${choix.name}</h2>
+              <span>couleur : ${choix.couleur}</span>
+              <p data-prix="${index[i].price}">${index[i].price} €</p>
+            </div>
+            <div class="cart__item__content__settings">
+              <div class="cart__item__content__settings__quantity">
+                <p>Qté : </p>
+                <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${choix.quantite}">
+              </div>
+              <div class="cart__item__content__settings__delete">
+                <p class="deleteItem" data-id="${choix._id}" data-couleur="${choix.couleur}">Supprimer</p>
+              </div>
+            </div>
+          </div>
+        </article>`
         }
       }
     }
-    
+
     // créait l'affichage si les conditions sont présentes
-    affichePanierDom(panier);
+    //affichePanierDom(panier);
+
+    zonePanier.innerHTML = recapPanierDom;
+    AffichagetotalProduit();
   } else {
     // si il n'y a pas de panier on créait un H1 informatif et quantité appropriées
     document.querySelector("#totalQuantity").innerHTML = "0";
@@ -159,7 +188,7 @@ function affichagePanier(index) {
 
 //Fonction d'affichage d'un panier (tableau)
 
-function affichePanierDom(indexe) {
+/*function affichePanierDom(indexe) {
   // on déclare et on pointe la zone d'affichage
   let zonePanier = document.querySelector("#cart__items");
   // on créait les affichages des produits du panier via introduction de dataset dans le code
@@ -187,8 +216,8 @@ function affichePanierDom(indexe) {
   </article>`
   ).join(""); //on remplace les virgules de jonctions des objets du tableau par un vide
   // reste à l'écoute des modifications de quantité pour l'affichage et actualiser les données
-  AffichagetotalProduit();
-}
+  //AffichagetotalProduit();
+}*/
 
 // fonction modifQuantite on modifie dynamiquement les quantités du panier
 function modifQuantite() {
@@ -203,11 +232,11 @@ function modifQuantite() {
       let product = cardItem.dataset
 
       if (quantite <= 0) {
-        
+
         alert("La quantité ne doit pas être <=0");
         window.location.assign("cart.html");
       } else if (quantite > 100) {
-        
+
         alert("La quantité ne doit pas être <=0");
         window.location.assign("cart.html")
       } else {
@@ -217,7 +246,7 @@ function modifQuantite() {
         let panier = getPanier();
         // boucle pour modifier la quantité du produit du panier grace à la nouvelle valeur
         for (article of panier)
-          
+
           if (
             article._id === product.id &&
             product.couleur === article.couleur
@@ -238,22 +267,52 @@ function modifQuantite() {
 
 // fonction ajout nombre total produit et coût total
 function AffichagetotalProduit() {
-  let panier = getPanier();
-  // déclaration variable en tant que nombre
-  let totalArticle = 0;
 
-  let prixCombiné = 0;
+  let objetProduits;
 
-  let totalPrix = 0;
-  // calcule la somme/prix total
-  for (let article of panier) {
-    totalArticle += JSON.parse(article.quantite);
-    prixCombiné = JSON.parse(article.quantite) * JSON.parse(article.prix);
-    totalPrix += prixCombiné;
-  }
 
-  document.getElementById("totalQuantity").textContent = totalArticle;
-  document.getElementById("totalPrice").textContent = totalPrix;
+  fetch("http://localhost:3000/api/products")
+    .then((res) => res.json())
+    .then((objetProduits) => {
+      console.log(objetProduits);
+
+      //console.log(objetProduits);
+
+      let panier = getPanier();
+      // déclaration variable en tant que nombre
+      let totalArticle = 0;
+
+      let prixCombiné = 0;
+
+      let totalPrix = 0;
+
+
+      // zone de correspondance clef/valeur de l'api et du panier
+      for (let choix of panier) {
+        for (let i = 0, h = objetProduits.length; i < h; i++) {
+          if (choix._id === objetProduits[i]._id) {
+            // calcule la somme/prix total
+            totalArticle += JSON.parse(choix.quantite);
+            prixCombiné = JSON.parse(choix.quantite) * JSON.parse(objetProduits[i].price);
+            totalPrix += prixCombiné;
+
+
+          }
+        }
+      }
+
+
+
+
+      document.getElementById("totalQuantity").textContent = totalArticle;
+      document.getElementById("totalPrice").textContent = totalPrix;
+    })
+    .catch((err) => {
+      document.querySelector("#cartAndFormContainer").innerHTML = "<h1>erreur 404</h1>";
+      console.log("erreur 404, sur ressource api: " + err);
+    });
+
+
 }
 
 

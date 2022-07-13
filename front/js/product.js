@@ -25,7 +25,7 @@ panierClient._id = id;
 // fonction d'affichage du produit de l'api
 
 function affichageProduit(produit) {
-  
+
   // déclaration des variables selector
   let imageAlt = document.querySelector("article div.item__img");
   let titre = document.querySelector("#title");
@@ -41,12 +41,12 @@ function affichageProduit(produit) {
   description.textContent = produit.description;
 
   // on ajoute le prix dans le panier 
-  panierClient.prix = produit.price;
+  //panierClient.prix = produit.price;
   // boucle pour chercher les couleurs pour chaque produit 
   for (let couleur of produit.colors) {
     couleurOption.innerHTML += `<option value="${couleur}">${couleur}</option>`;
   }
-  
+
 
 }
 
@@ -95,7 +95,7 @@ choixProduit.addEventListener("click", () => {
     ajoutPanier();
     //redirection vers la page panier
     window.location.assign("cart.html")
-    
+
   }
 });
 
